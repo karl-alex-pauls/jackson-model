@@ -123,6 +123,7 @@
     </pluginRepositories>
 
     <modules>
-        <module>tools/parser</module>
+        <module>impl</module>
+        <module>jdk8-support</module>
     </modules>
 </project>
