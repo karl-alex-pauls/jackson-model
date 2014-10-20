@@ -1,7 +1,7 @@
 package org.mmah.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kap.jackson.config.JsonConfigScanner;
+import karl.codes.jackson.config.JsonConfigScanner;
 import org.springframework.context.annotation.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 

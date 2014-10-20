@@ -1,8 +1,8 @@
-package kap.jackson.config;
+package karl.codes.jackson.config;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import kap.springframework.config.AnnotationScannerBuilder;
+import karl.codes.springframework.config.AnnotationScannerBuilder;
 
 import java.util.Collection;
 import java.util.Map;

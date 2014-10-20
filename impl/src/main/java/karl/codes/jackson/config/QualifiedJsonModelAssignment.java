@@ -1,4 +1,4 @@
-package kap.jackson.config;
+package karl.codes.jackson.config;
 
 /**
  * Created by karl on 7/9/14.

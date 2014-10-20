@@ -1,4 +1,4 @@
-package kap.springframework.config;
+package karl.codes.springframework.config;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;

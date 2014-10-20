@@ -1,4 +1,4 @@
-package kap.jackson.config;
+package karl.codes.jackson.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

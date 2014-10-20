@@ -1,4 +1,4 @@
-package kap.springframework.config;
+package karl.codes.springframework.config;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -32,7 +32,7 @@ public class AnnotationScannerBuilder<K> {
     public AnnotationScannerBuilder<K>
     enableJava8Support() {
         try {
-            factory = (Class<? extends AnnotationScanner>)Class.forName("kap.springframework.config.AnnotationScannerJ8");
+            factory = (Class<? extends AnnotationScanner>)Class.forName("karl.codes.springframework.config.AnnotationScannerJ8");
         } catch(ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

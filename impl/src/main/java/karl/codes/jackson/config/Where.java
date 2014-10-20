@@ -1,4 +1,4 @@
-package kap.jackson.config;
+package karl.codes.jackson.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 
