@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.*;
-import kap.springframework.config.AnnotationScanner;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -83,7 +82,7 @@ public class AnnotationScannerJ7 extends ClassPathScanningCandidateComponentProv
     @Override
     public <T extends Annotation, K> Map<K, Collection<Class<?>>>
     scanType(String basePackage,
-             Class<T> type,
+             final Class<T> type,
              Function<T, K> keyMapper) {
 
         Function<Class<?>,K> transform = Functions.compose(keyMapper,new Function<Class<?>, T>() {
@@ -99,8 +98,8 @@ public class AnnotationScannerJ7 extends ClassPathScanningCandidateComponentProv
     @Override
     public <K> Map<K, Collection<Class<?>>>
     scanMultiType(String basePackage,
-                  Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
-                  Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter) {
+                  final Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
+                  final Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter) {
 
         return index(findClasses(basePackage).iterator(), new Function<Class<?>, Collection<K>>() {
             @Override
@@ -108,7 +107,9 @@ public class AnnotationScannerJ7 extends ClassPathScanningCandidateComponentProv
                 // Annotation -> annotation type map for this class
                 List<K> result = new ArrayList<K>();
                 for (Class<? extends Annotation> type : keyMappers.keySet()) {
-                    for (Annotation a : aClass.getAnnotationsByType(type)) {
+                    for (Annotation a : aClass.getAnnotations()) {
+                        // filter wrong type
+                        if(!type.isInstance(a)) continue;
                         // filter ignored
                         if(!includeFilter.get(type).apply(a)) continue;
                         // apply mapper function per annotation
