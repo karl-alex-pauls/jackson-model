@@ -6,7 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies a concrete class that the annotated class which defines Jackson Mix-In annotations.
+ * Specifies a concrete class for the annotated class which defines Jackson Mix-In annotations. In
+ * other words classes annotated with @JsonModel are the source of the annotations, the class specified
+ * in value is the destination.
  *
  * Specify "orElse" or use @Order on the annotated class to specify the order in which @where conditions
  * are evaluated (If both strategies are mixed then types declaring @Order are sorted, "orElse" children

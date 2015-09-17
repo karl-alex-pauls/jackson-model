@@ -7,6 +7,6 @@ import java.lang.annotation.RetentionPolicy;
  * Created by karl on 6/22/14.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@A(A.class)
-public @interface AB {
+@A(AA.class)
+public @interface AA {
 }
