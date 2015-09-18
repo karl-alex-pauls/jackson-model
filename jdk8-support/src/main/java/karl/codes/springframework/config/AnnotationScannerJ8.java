@@ -78,17 +78,17 @@ public class AnnotationScannerJ8 extends ClassPathScanningCandidateComponentProv
 
         return stream(basePackage)
                 .collect(Collectors.<Class<?>, K, Collection<Class<?>>>toMap(
-                        keyMapper::apply,
-                        aClass -> { // value function
-                            Set<Class<?>> s = Sets.newIdentityHashSet();
-                            s.add(aClass);
-                            return s;
-                        },
-                        (left, right) -> { // value reducer function
-                            left.addAll(right);
-                            return left;
-                        }
-                )
+                                keyMapper::apply,
+                                aClass -> { // value function
+                                    Set<Class<?>> s = Sets.newIdentityHashSet();
+                                    s.add(aClass);
+                                    return s;
+                                },
+                                (left, right) -> { // value reducer function
+                                    left.addAll(right);
+                                    return left;
+                                }
+                        )
                 );
     }
 
@@ -134,6 +134,36 @@ public class AnnotationScannerJ8 extends ClassPathScanningCandidateComponentProv
                         },
                         entry -> { // value function
                             Set<Class<?>> s = Sets.newIdentityHashSet();
+                            s.add(entry.getValue());
+                            return s;
+                        },
+                        (left, right) -> { // value reducer function
+                            left.addAll(right);
+                            return left;
+                        }
+                ));
+    }
+
+    @Override
+    public <K> Map<K, Collection<Class<?>>>
+    scanMultiType(String basePackage,
+                  final Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
+                  final Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter,
+                  final Comparator<? super Class<?>> orderBy) {
+
+        return stream(basePackage)
+                .flatMap(aClass -> findAnnotations(aClass, keyMappers.keySet()).entrySet().stream()
+                        .filter(entry -> {
+                            Annotation a = entry.getKey();
+                            return includeFilter.get(a.annotationType()).apply(a);
+                        }))
+                .collect(Collectors.toMap( // <Map.Entry<...>,Class<?>,Collection<Class<?>>>
+                        entry -> { // key function
+                            Annotation a = entry.getKey();
+                            return keyMappers.get(a.annotationType()).apply(a);
+                        },
+                        entry -> { // value function
+                            Set<Class<?>> s = Sets.newTreeSet(orderBy);
                             s.add(entry.getValue());
                             return s;
                         },

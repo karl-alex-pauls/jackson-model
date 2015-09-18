@@ -2,7 +2,9 @@ package karl.codes.jackson.config;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Ordering;
 import karl.codes.springframework.config.AnnotationScannerBuilder;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,19 +16,10 @@ public class JsonConfigScanner {
     private static final AnnotationScannerBuilder<Class<?>> scanner =
             new AnnotationScannerBuilder<Class<?>>()
             .enableJava8Support()
-            .map(JsonModel.class,
-                    new Function<JsonModel, Class<?>>() {
-                        @Override
-                        public Class<?> apply(JsonModel jsonModel) {
-                            return jsonModel.value();
-                        }
-                    },
-                    new Predicate<JsonModel>() {
-                        @Override
-                        public boolean apply(JsonModel jsonModel) {
-                            return jsonModel.value() != null;
-                        }
-                    });
+            .map(JsonModel.class, JsonModel.GET_VALUE, JsonModel.VALUE_NOT_NULL)
+            .orderBy(Ordering.from(AnnotationAwareOrderComparator.INSTANCE)
+                    .thenComparing(Ordering.arbitrary()))
+            ;
 
 //    private static final AnnotationScannerBuilder<QualifiedJsonModelAssignment> qualifiedScanner =
 //            new AnnotationScannerBuilder<QualifiedJsonModelAssignment>()

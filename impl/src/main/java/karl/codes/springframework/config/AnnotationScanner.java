@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,4 +37,10 @@ public interface AnnotationScanner {
     scanMultiType(String basePackage,
                   Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
                   Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter);
+
+    <K> Map<K, Collection<Class<?>>>
+    scanMultiType(String basePackage,
+                  Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
+                  Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter,
+                  Comparator<? super Class<?>> orderBy);
 }

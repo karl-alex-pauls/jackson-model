@@ -100,7 +100,15 @@ public class AnnotationScannerJ7 extends ClassPathScanningCandidateComponentProv
     scanMultiType(String basePackage,
                   final Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
                   final Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter) {
+        return scanMultiType(basePackage,keyMappers,includeFilter,Ordering.arbitrary());
+    }
 
+    @Override
+    public <K> Map<K, Collection<Class<?>>>
+    scanMultiType(String basePackage,
+                  final Map<Class<? extends Annotation>, Function<Annotation, K>> keyMappers,
+                  final Map<Class<? extends Annotation>, Predicate<Annotation>> includeFilter,
+                  final Comparator<? super Class<?>> orderBy) {
         return index(findClasses(basePackage).iterator(), new Function<Class<?>, Collection<K>>() {
             @Override
             public Collection<K> apply(final Class<?> aClass) {
@@ -118,15 +126,20 @@ public class AnnotationScannerJ7 extends ClassPathScanningCandidateComponentProv
                 }
                 return result;
             }
-        }).asMap();
+        },orderBy).asMap();
     }
 
     // this code is copied from Guava 18.0
-    public static <K, V> ImmutableListMultimap<K, V> index(
-            Iterator<V> values, Function<? super V, ? extends Iterable<K>> keyFunction) {
+    public static <K, V> ImmutableSetMultimap<K, V> index(
+            Iterator<V> values,
+            Function<? super V, ? extends Iterable<K>> keyFunction,
+            Comparator<? super V> valueComparator) {
+
         checkNotNull(keyFunction);
-        ImmutableListMultimap.Builder<K, V> builder
-                = ImmutableListMultimap.builder();
+        ImmutableSetMultimap.Builder<K, V> builder = ImmutableSetMultimap
+                .<K,V>builder()
+                .orderValuesBy(valueComparator);
+
         while (values.hasNext()) {
             V value = values.next();
             checkNotNull(value, values);

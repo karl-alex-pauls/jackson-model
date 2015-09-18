@@ -2,13 +2,11 @@ package karl.codes.springframework.config;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Fluent builder interface to annotation scanner. Eliminates repetition in adding class scanning.
@@ -18,6 +16,7 @@ public class AnnotationScannerBuilder<K> {
     private Class<? extends AnnotationScanner> factory = AnnotationScannerJ7.class;
     private Map<Class<? extends Annotation>, Function<Annotation,K>> keyFunctions = new HashMap<>();
     private Map<Class<? extends Annotation>, Predicate<Annotation>> predicateFunctions = new HashMap<>();
+    private Comparator<Object> orderBy = Ordering.arbitrary();
 
     private boolean metaAnnotation;
 
@@ -60,6 +59,7 @@ public class AnnotationScannerBuilder<K> {
             instance.scanner = factory.newInstance();
             instance.keys = keyFunctions;
             instance.predicates = predicateFunctions;
+            instance.orderBy = orderBy;
 
             Set<Class<? extends Annotation>> classes = Sets.newIdentityHashSet();
             classes.addAll(keyFunctions.keySet());
@@ -79,13 +79,20 @@ public class AnnotationScannerBuilder<K> {
         }
     }
 
+    public AnnotationScannerBuilder<K> orderBy(Comparator<Object> classComparator) {
+        orderBy = classComparator;
+
+        return this;
+    }
+
     public static class AnnotationScanTask<R> {
         private AnnotationScanner scanner;
         private Map<Class<? extends Annotation>, Function<Annotation,R>> keys = new HashMap<>();
         private Map<Class<? extends Annotation>, Predicate<Annotation>> predicates = new HashMap<>();
+        private Comparator<Object> orderBy = Ordering.arbitrary();
 
         public Map<R,Collection<Class<?>>> toMap(String basePackage) {
-            return scanner.scanMultiType(basePackage, keys, predicates);
+            return scanner.scanMultiType(basePackage, keys, predicates, orderBy);
         }
     }
 }

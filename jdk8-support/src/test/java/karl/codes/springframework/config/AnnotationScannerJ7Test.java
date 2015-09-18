@@ -1,7 +1,13 @@
 package karl.codes.springframework.config;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import karl.codes.jackson.config.JsonModel;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import test.annotations.A;
+import test.model.ConcretePOJO1;
 import test.model.WatchedByThingA;
 
 import java.util.Collection;
@@ -16,11 +22,32 @@ import static org.junit.Assert.*;
 public class AnnotationScannerJ7Test {
     @Test
     public void testWatchedThing() {
-        AnnotationScannerBuilder.AnnotationScanTask scanner = AnnotationScannerFixture.newBuilder()
+        AnnotationScannerBuilder.AnnotationScanTask<Class<?>> scanner = new AnnotationScannerBuilder<Class<?>>()
+                .map(A.class,A.GET_VALUE,A.VALUE_NOT_NULL)
                 .build();
 
-        Map<Class<?>, Collection<Class<?>>> models = scanner.toMap("test.scan.a");
+        Map<Class<?>, Collection<Class<?>>> concrete = scanner.toMap("test.scan.a");
 
-        AnnotationScannerFixture.validateModels(models, 1, WatchedByThingA.class, 1);
+        Collection<Class<?>> models = concrete.get(WatchedByThingA.class);
+
+        assertThat(concrete.size(), is(1));
+        assertThat(models, notNullValue());
+        assertThat(models.size(), is(1));
+    }
+
+    @Test
+    public void multimapCollapsesEquivalentValues() {
+        AnnotationScannerBuilder.AnnotationScanTask<Class<?>> scanner = new AnnotationScannerBuilder<Class<?>>()
+                .map(JsonModel.class,JsonModel.GET_VALUE,JsonModel.VALUE_NOT_NULL)
+                .orderBy(AnnotationAwareOrderComparator.INSTANCE)
+                .build();
+
+        Map<Class<?>, Collection<Class<?>>> concrete = scanner.toMap("test.scan.pojo1");
+
+        Collection<Class<?>> models = concrete.get(ConcretePOJO1.class);
+
+        assertThat(concrete.size(), is(1));
+        assertThat(models, notNullValue());
+        assertThat("Multimap failed to remove equal values", models.size(), is(1));
     }
 }

@@ -1,9 +1,9 @@
 package karl.codes.jackson.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+
+import java.lang.annotation.*;
 
 /**
  * Specifies a concrete class for the annotated class which defines Jackson Mix-In annotations. In
@@ -19,6 +19,20 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonModel {
+    Function<JsonModel, Class<?>> GET_VALUE = new Function<JsonModel, Class<?>>() {
+        @Override
+        public Class<?> apply(JsonModel annotation) {
+            return annotation.value();
+        }
+    };
+
+    Predicate<JsonModel> VALUE_NOT_NULL = new Predicate<JsonModel>() {
+        @Override
+        public boolean apply(JsonModel annotation) {
+            return annotation.value() != null;
+        }
+    };
+
     /**
      * The concrete class which will benefit from the annotated class's type and field annotations
      */

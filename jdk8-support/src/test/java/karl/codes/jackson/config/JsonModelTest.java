@@ -1,7 +1,7 @@
 package karl.codes.jackson.config;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,11 +26,10 @@ public class JsonModelTest {
         assertThat(models.size(), is(1));
         assertThat(concrete, notNullValue());
         assertThat(concrete.size(), is(2));
-        assertThat(concrete, equalTo(Arrays.asList(ModelOne.class, ModelTwo.class)));
+        assertThat(concrete, containsInAnyOrder(ModelOne.class, ModelTwo.class));
     }
 
     @Test
-    @Ignore("need to implement Order, Priority comparator")
     public void testConcretePOJO2() {
         Map<Class<?>, Collection<Class<?>>> models = JsonConfigScanner.collectModels("test.scan.pojo2");
         Collection<Class<?>> concrete = models.get(ConcretePOJO2.class);
@@ -38,6 +37,6 @@ public class JsonModelTest {
         assertThat(models.size(), is(1));
         assertThat(concrete, notNullValue());
         assertThat(concrete.size(), is(2));
-        assertThat(concrete, equalTo(Arrays.asList(test.scan.pojo2.ModelTwo.class, test.scan.pojo2.ModelOne.class)));
+        assertThat(concrete, contains(test.scan.pojo2.ModelTwo.class, test.scan.pojo2.ModelOne.class));
     }
 }
