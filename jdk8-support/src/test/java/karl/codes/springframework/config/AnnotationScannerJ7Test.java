@@ -1,9 +1,6 @@
 package karl.codes.springframework.config;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import karl.codes.jackson.config.JsonModel;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import test.annotations.A;

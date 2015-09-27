@@ -39,14 +39,18 @@ public @interface JsonModel {
     Class<?> value();
 
     /**
-     * A set of @Qualifiers and meta-annotation prototypes to limit the assignment of this mix-in.
+     * Sets of @Qualifiers and meta-annotation prototypes to limit the assignment of this mix-in. One of
+     * the @Where clauses must be matched (logical OR) and all qualifiers and prototypes in a @Where
+     * must match (logical AND).
      * <p>
      * For example a class annotated with @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')" would restrict
+     * the mapping of the concrete data to JsonModel such that the requesting session would have the
+     * ROLE_ADMINISTRATOR permission.
      *
      * @deprecated not ready
      */
     @Deprecated
-    Where where() default @Where;
+    Where[] where() default @Where;
 
     /**
      * The model to evaluate next for the given concrete type if the where clause is not satisfied.
